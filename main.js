@@ -26,6 +26,9 @@ const config = require('./config.json');
 const klaw = require('klaw');
 const path = require('path');
 const { on } = require('./models/guild');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+const { MessageActionRow, MessageSelectMenu, MessageEmbed } = require('discord.js');
 
 
 client.commands = new Discord.Collection();
@@ -82,7 +85,91 @@ Array.prototype.remove = function() {
 
 //slash commands
 
+// Place your client and guild ids here
 
+const slashCommands = [];
+const slashCommandFiles = fs.readdirSync('./slashCommands').filter(file => file.endsWith('.js'));
+
+// Place your client and guild ids here
+const clientId = config.clientId;
+const guildId = 'CLIENT ID GOES HERE';
+
+for (const file of slashCommandFiles) {
+	const command = require(`./slashCommands/${file}`);
+	slashCommands.push(command.data.toJSON());
+}
+
+const rest = new REST({ version: '9' }).setToken(config.token);
+
+(async () => {
+	try {
+		console.log('Started refreshing application (/) commands.');
+
+		await rest.put(
+			Routes.applicationGuildCommands(clientId, guildId),
+			{ body: slashCommands },
+		);
+
+		console.log('Successfully reloaded application (/) commands.');
+	} catch (error) {
+		console.error(error);
+	}
+})();
+
+client.on('interactionCreate', async interaction => {
+    if (!interaction.isCommand()) return;
+
+    if (interaction.commandName === 'ping') {
+        let ping = new MessageEmbed()
+        .setTitle(`Calculating ping...`)
+    
+        const startTime = Date.now();
+        interaction.reply({ embeds: [ping], ephemeral: true  })
+        .then(msg => {
+            const endTime = Date.now();
+            var pong = endTime-startTime;
+    
+                let ping = new MessageEmbed()
+                .setTitle(`:ping_pong: Pong!`)
+                .setColor('27cc9a')
+                .setDescription(`Latency: ${pong} ms \nApi Latency: ${Math.round(client.ws.ping)} ms` )
+    
+                interaction.editReply({ embeds: [ping], ephemeral: true  });
+            }); 
+    
+    }
+
+    if (interaction.commandName === 'tickets') {
+        const row = new MessageActionRow()
+            .addComponents(
+                new MessageSelectMenu()
+                    .setCustomId('select')
+                    .setPlaceholder('What are you making a ticket for?')
+                    .addOptions([
+                        {
+                            label: 'Reporting a user',
+                            description: 'This will open a mod ticket',
+                            value: 'first_option'
+                        },
+                        {
+                            label: 'Giving a server suggestion',
+                            description: 'This will open a suggestion ticket',
+                            value: 'second_option'
+                        },
+                    ]),
+            );
+
+            await interaction.reply({ content: 'Ticket options', components: [row], ephemeral: true });
+    }
+});
+
+client.on('interactionCreate', async interaction => {
+	if (!interaction.isSelectMenu()) return;
+
+	if (interaction.customId === 'select') {
+		await interaction.update({ content: 'Something was selected!', components: [] });
+	}
+});
 
 
 client.mongoose.init();
