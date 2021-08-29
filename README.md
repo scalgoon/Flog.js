@@ -1,5 +1,22 @@
-# Terminal.js
-Javascript Version of Terminal
+<h1>Terminal.js</h1>
+<p>
+  <img alt="Version" src="https://img.shields.io/badge/version-3 Beta-blue.svg?cacheSeconds=2592000" />
+  </a>
+</p>
+
+## Installing the modules
+
+```sh
+npm install
+```
+
+## Terminal's prefix
+
+```
+*help or <@Terminal>help
+```
+
+## Open Source
 
 ***What can i do with this code?***
 
