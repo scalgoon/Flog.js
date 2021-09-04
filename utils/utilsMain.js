@@ -6,7 +6,7 @@ const moment = require("moment");
  * Big boi collection of all commands used within the client globally, Usage: client.loadCommands(...)
  * @param {Client} client
  */
-module.exports = (client, guild) => {
+module.exports = (client) => {
 
     /**
      * A fancy log function stolen from the man himself... 3vil.
