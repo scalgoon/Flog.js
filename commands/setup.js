@@ -4,8 +4,6 @@ const db = require('quick.db');
 
 module.exports.run = async (client, message, args) => {
 
-    try {
-
         if (!message.member.permissions.has('MANAGE_GUILD')) return message.channel.send('You do not have permission to use this command!');
 
         let noOption = new MessageEmbed()
@@ -134,28 +132,12 @@ module.exports.run = async (client, message, args) => {
             }
 
         }
-
-    } catch (e) {
-
-        let reembed = new MessageEmbed()
-            .setColor("RED")
-            .setTitle("Command Error")
-            .addField("Command", "setup")
-            .addField("Guild", `${message.guild.name} (${message.guildId})`)
-            .addField("Error:", `> ${e}`)
-            .setTimestamp()
-
-        await client.users.cache.get("734784924619505774").send({ embeds: [reembed] });
-
-        message.reply("An error has occured and has been reported to my creator!");
-    }
-
 }
 
 module.exports.config = {
     name: "setup",
-    aliases: ["8b", "ask"],
-    category: "Misc",
-    usage: "*8ball 'question here'?",
-    description: "Sends a answer to your question"
+    aliases: [],
+    category: "Server",
+    usage: "*setup <options> <mini-option> <required-arg>",
+    description: "Sets the server up for the bot"
 }
