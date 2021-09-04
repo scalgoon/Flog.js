@@ -4,8 +4,6 @@ const db = require('quick.db');
 
 module.exports.run = async (client, message, args) => {
 
-    try {
-
         if (!message.member.permissions.has('MANAGE_MESSAGES')) return;
 
         if (!args[0]) return message.channel.send(embed3);
@@ -58,22 +56,6 @@ module.exports.run = async (client, message, args) => {
             message.channel.send(`The logs for **${user.user.username}** are now deleted`);
 
         }
-
-    } catch (e) {
-
-        let reembed = new MessageEmbed()
-            .setColor("RED")
-            .setTitle("Command Error")
-            .addField("Command", "logs")
-            .addField("Guild", `${message.guild.name} (${message.guildId})`)
-            .addField("Error:", `> ${e}`)
-            .setTimestamp()
-
-        await client.users.cache.get("734784924619505774").send({ embeds: [reembed] });
-
-        message.reply("An error has occured and has been reported to my creator!");
-    }
-
 }
 
 module.exports.config = {
