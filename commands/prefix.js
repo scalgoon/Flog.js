@@ -1,54 +1,44 @@
-const { MessageEmbed } = require('discord.js');
+const db = require('quick.db');
 
-const mongoose = require('mongoose');
+module.exports.run = async (client, message, args) => {
 
-const Guild = require('../models/guild');
+    try {
 
-const config = require('../config.json');
+        if (!message.member.permissions.has('ADMINISTRATOR')) return;
 
-module.exports.run = async(client, message, args) =>  {
+        if (!args[0]) return message.channel.send("Please provide a new prefix for me to set")
 
-    if (!message.member.permissions.has('MANAGE_GUILD')) {
-        return message.channel.send('You do not have permission to use this command!');
-    };
+        changes = args[0]
 
-    const settings = await Guild.findOne({
-        guildID: message.guild.id
-    }, (err, guild) => {
-        if (err) console.error(err)
-        if (!guild) {
-            const newGuild = new Guild({
-                _id: mongoose.Types.ObjectId(),
-                guildID: message.guild.id,
-                guildName: message.guild.name,
-                prefix: config.prefix
-            })
+        if (changes.length > 3) return message.channel.send("The new prefix must be under 3 characters!");
 
-            newGuild.save()
-            .then(result => console.log(result))
-            .catch(err => console.error(err));
-        }
-    });
 
-    if (args.length < 1) {
-        return message.channel.send('Please specify a prefix for me to set');
-    };
+        db.set(`prefix1_${message.guild.id}`, changes)
 
-    await settings.updateOne({
-        prefix: args[0]
-    });
 
-    let embed = new MessageEmbed()
-        .setTitle('Prefix Set')
-        .setDescription(`<:check:782029189963710464> The prefix for this server is now **${args[0]}**`)
-        .setColor('GREEN')
+        message.channel.send(`My prefix is now **${args[0]}**`);
 
-    message.channel.send({ embeds: [embed] });
+    } catch (e) {
+
+        let reembed = new MessageEmbed()
+            .setColor("RED")
+            .setTitle("Command Error")
+            .addField("Command", "prefix")
+            .addField("Guild", `${message.guild.name} (${message.guildId})`)
+            .addField("Error:", `> ${e}`)
+            .setTimestamp()
+
+        await client.users.cache.get("734784924619505774").send({ embeds: [reembed] });
+
+        message.reply("An error has occured and has been reported to my creator!");
+    }
+
+
 }
 
-   module.exports.config = {
+module.exports.config = {
     name: "prefix",
-    aliases: ["setprefix"],
+    aliases: ["pr"],
     category: "Setup",
     usage: "*prefix 'new prefix'",
     description: "Changes the bot's prefix for the guild"
