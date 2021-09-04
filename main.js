@@ -1,3 +1,5 @@
+require("colors");
+
 const Discord = require('discord.js');
 
 const client = new Discord.Client({
@@ -29,7 +31,8 @@ const path = require('path');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { MessageActionRow, MessageSelectMenu, MessageEmbed } = require('discord.js');
+const { MessageActionRow, MessageSelectMenu, MessageEmbed, MessageButton } = require('discord.js');
+const db = require('quick.db');
 
 
 client.commands = new Discord.Collection();
@@ -55,30 +58,15 @@ for (const file of commandFiles) {
 }
 
 const evtFiles = fs.readdirSync('./events');
+client.log('Load', `Loading a total of ${evtFiles.length} events`)
 klaw('./events').on("data", (item) => {
     const evtFile = path.parse(item.path);
     if (!evtFile.ext || evtFile.ext !== ".js") return;
     const event = require(`./events/${evtFile.name}${evtFile.ext}`);
     client.on(evtFile.name, event.bind(null, client));
+    client.log('EVENT BIND', `Event ${evtFile.name.green} was linked to file ${(evtFile.name + evtFile.ext).green}`)
 });
 
-
-Math.randomBetween = function (min, max) {
-    return Math.floor(
-        Math.random() * (max - min) + min
-    )
-};
-
-Array.prototype.remove = function () {
-    let what, a = arguments, L = a.length, ax;
-    while (L && this.length) {
-        what = a[--L];
-        while ((ax = this.indexOf(what)) !== -1) {
-            this.splice(ax, 1);
-        }
-    }
-    return this;
-};
 
 //slash commands
 
@@ -100,14 +88,14 @@ const rest = new REST({ version: '9' }).setToken(config.token);
 
 (async () => {
     try {
-        console.log('Started refreshing application (/) commands.');
+        client.log('Slash', `Started refreshing application (/) commands.`)
 
         await rest.put(
             Routes.applicationGuildCommands(clientId, guildId),
             { body: slashCommands },
         );
 
-        console.log('Successfully reloaded application (/) commands.');
+        client.log('Slash', `Successfully reloaded application (/) commands.`)
     } catch (error) {
         console.error(error);
     }
@@ -158,21 +146,113 @@ client.on('interactionCreate', async interaction => {
                     ]),
             );
 
-        await interaction.reply({ content: `Ticket options for **${interaction.guild.name}**`, components: [row] });
+        await interaction.reply({ content: `Ticket options for **${interaction.guild.name}**`, components: [row], ephemeral: true });
     }
 });
 
-client.on('interactionCreate', async interaction => {
+client.on('interactionCreate', async (interaction, guild) => {
     if (!interaction.isSelectMenu()) return;
 
     if (interaction.customId === 'tickets_select') {
-        await interaction.update({ content: `${interaction.values} was selected`, components: [] });
+        await interaction.update({ content: `Your option has been selected`, components: [], ephemeral: true });
     }
 
     if (interaction.values.includes('mod_option')) {
-        await interaction.channel.send({ content: `MOD`, components: [] });
+        let tik = db.fetch(`tickchnl_${interaction.guild.id}`);
+
+        if (tik === null) {
+            return interaction.channel.send("Please set a ticket channel category")
+        };
+
+        let donetik = await interaction.guild.channels.create(`Ticket: ${interaction.user.username}`, {
+            type: 'text',
+            parent: `${tik}`,
+            permissionOverwrites: [
+                {
+                    id: interaction.user.id,
+                    allow: ['SEND_MESSAGES', 'VIEW_CHANNEL'],
+                },
+                {
+                    id: interaction.guild.id,
+                    deny: ['VIEW_CHANNEL'],
+                }
+            ]
+        })
+
+        interaction.followUp({ content: `Your ticket has been made: ${donetik}`, ephemeral: true });
+
+        const row = new MessageActionRow()
+            .addComponents(
+
+                new MessageButton()
+                    .setCustomId('del')
+                    .setLabel('Delete')
+                    .setStyle('DANGER'),
+
+                new MessageButton()
+                    .setCustomId('lok')
+                    .setLabel('Lock')
+                    .setStyle('SECONDARY')
+
+
+            );
+
+        donetik.send({ content: `Thank you for contacting ${interaction.guild.name} support!\nA staff member will be right with you **${interaction.user.username}**`, components: [row] });
+
+        let chx = db.get(`botlgs_${interaction.guild.id}`);
+
+        if (chx === null) {
+            return;
+        }
+
+        let tikmade = new MessageEmbed()
+            .setAuthor(`${interaction.guild.name}`, interaction.guild.iconURL())
+            .setDescription(`Ticket was made`)
+            .addField("Author", `Name: **${interaction.user.tag}** \nID: ${interaction.user.id}`)
+            .addField("Channel", `Name: ${donetik} \nID: ${donetik.id}`)
+            .setColor("PURPLE")
+            .setTimestamp()
+
+        client.channels.cache.get(chx).send({ embeds: [tikmade] });
     }
 });
+
+client.on('interactionCreate', (interaction) => {
+    if (!interaction.isButton()) return
+    switch (interaction.customId) {
+        case "del":
+            interaction.reply("This ticket will be automatically deleted in 5 seconds.")
+            setTimeout(() => interaction.channel.delete(), 5000);
+
+            let chx = db.get(`botlgs_${interaction.guild.id}`);
+
+        if (chx === null) {
+            return;
+        }
+
+        let tikgone = new MessageEmbed()
+            .setAuthor(`${interaction.guild.name}`, interaction.guild.iconURL())
+            .setDescription(`Ticket was deleted`)
+            .addField("Moderator", `Name: **${interaction.user.tag}** \nID: ${interaction.user.id}`)
+            .addField("Channel", `Name: ${interaction.channel.name} \nID: ${interaction.channel.id}`)
+            .setColor("RED")
+            .setTimestamp()
+
+        client.channels.cache.get(chx).send({ embeds: [tikgone] });
+    }
     
+})
+
+client.on('interactionCreate', (interaction) => {
+    if (!interaction.isButton()) return
+    switch (interaction.customId) {
+        case "lok":
+            interaction.reply("This ticket is now locked")
+            interaction.channel.permissionOverwrites.edit(interaction.user.id, { SEND_MESSAGES: false });
+    }
+})
+
+
 
 client.login(config.token);
+
