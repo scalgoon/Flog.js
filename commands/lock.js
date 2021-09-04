@@ -1,38 +1,37 @@
 const { MessageEmbed } = require('discord.js');
 
-module.exports.run = async(client, message, args) =>  {
-    
-    if (!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send("You do not have the perms to use this command");
+module.exports.run = async (client, message, args) => {
 
-    if (!args[0]) return message.channel.send("Please specify on or off");
+        if (!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send("You do not have the perms to use this command");
 
-    if(args[0] === "on") {
-        let onlock = new MessageEmbed()
-            .setDescription(`<:check:782029189963710464> Successfully locked <#${message.channel.id}>`)
-            .setColor("GREEN")
+        if (!args[0]) return message.channel.send("Please specify on or off");
 
-        message.channel.permissionOverwrite(message.guild.roles.everyone, {
-            SEND_MESSAGES: false
+        if (args[0] === "on") {
+            let onlock = new MessageEmbed()
+                .setDescription(`<:check:782029189963710464> Successfully locked <#${message.channel.id}>`)
+                .setColor("GREEN")
 
-        })
-        return message.channel.send({ embeds: [onlock] });
-    };
+            message.channel.permissionOverwrites.edit(message.guild.roles.everyone, {
+                SEND_MESSAGES: false
 
-    if(args[0] === "off") {
-        let unlock = new MessageEmbed()
-            .setDescription(`<:check:782029189963710464> Successfully unlocked <#${message.channel.id}>`)
-            .setColor("GREEN")
+            })
+            return message.channel.send({ embeds: [onlock] });
+        };
 
-        message.channel.permissionOverwrite(message.guild.roles.everyone, {
-            SEND_MESSAGES: true
+        if (args[0] === "off") {
+            let unlock = new MessageEmbed()
+                .setDescription(`<:check:782029189963710464> Successfully unlocked <#${message.channel.id}>`)
+                .setColor("GREEN")
 
-        })
-        return message.channel.send({ embeds: [unlock] });
-    }
+            message.channel.permissionOverwrites.edit(message.guild.roles.everyone, {
+                SEND_MESSAGES: true
 
-   }
+            })
+            return message.channel.send({ embeds: [unlock] });
+        }
+}
 
-   module.exports.config = {
+module.exports.config = {
     name: "lock",
     aliases: ["l"],
     category: "Moderation",
