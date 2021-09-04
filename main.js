@@ -70,8 +70,6 @@ klaw('./events').on("data", (item) => {
 
 //slash commands
 
-// Place your client and guild ids here
-
 const slashCommands = [];
 const slashCommandFiles = fs.readdirSync('./slashCommands').filter(file => file.endsWith('.js'));
 
