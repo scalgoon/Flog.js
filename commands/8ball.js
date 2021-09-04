@@ -28,27 +28,9 @@ const answers = [
 
 module.exports.run = async (client, message, args) => {
 
-	try {
-
 		message.reply(args.join(' ').endsWith('?') ?
 			`${answers[Math.floor(Math.random() * answers.length)]}` :
 			'Seems like your missing a "?"');
-
-	} catch (e) {
-
-		let reembed = new MessageEmbed()
-			.setColor("RED")
-			.setTitle("Command Error")
-			.addField("Command", "8ball")
-			.addField("Guild", `${message.guild.name} (${message.guildId})`)
-			.addField("Error:", `> ${e}`)
-			.setTimestamp()
-
-		await client.users.cache.get("734784924619505774").send({ embeds: [reembed] });
-
-		message.reply("An error has occured and has been reported to my creator!");
-	}
-
 }
 
 
