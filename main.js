@@ -250,6 +250,46 @@ client.on('interactionCreate', (interaction) => {
     }
 })
 
+client.on('interactionCreate', (interaction) => {
+    if (!interaction.isButton()) return
+    switch (interaction.customId) {
+        case "topdel":
+            let chx = db.get(`topchannel_${interaction.guild.id}`);
+
+    try {
+        client.channels.cache.get(chx).send("This topic will be automatically deleted in 5 seconds.")
+        setTimeout(() =>  client.channels.cache.get(chx).delete(), 5000);
+
+        interaction.reply({ content: "Topic successfully deleted!", ephemeral: true })
+
+        db.set(`topchannel_${interaction.guild.id}`, null);
+    }catch(e){
+        interaction.reply({ content: "An error occured! \nMaybe this topic is already deleted?", ephemeral: true })
+    }
+    }
+})
+
+client.on("messageDelete", (message) => {
+    let chx = db.get(`botlgs_${message.guild.id}`);
+
+    if (chx === null) {
+        return;
+    }
+
+
+    let delet = new MessageEmbed()
+        .setAuthor(`${message.guild.name}`, message.guild.iconURL())
+        .setDescription(`Message deleted in <#${message.channel.id}>`)
+        .addField("Author", `Name: <@${message.author.id}> \nID: ${message.author.id}`)
+        .addField("Channel", `Name: ${message.channel.name} \nID: ${message.channel.id}`)
+        .addField(`Content:`, `\`\`\`\n${message.content}\n\`\`\``)
+        .setColor("PURPLE")
+        .setTimestamp()
+
+    client.channels.cache.get(chx).send({ embeds: [delet] });
+
+})
+
 
 
 client.login(config.token);
