@@ -12,8 +12,6 @@ module.exports.run = async(client, message, args) =>  {
                   return message.channel.send("Please set a bot logs channel")
               }
 
-    try {
-
       let isopen =  db.fetch(`topchannel_${message.guild.id}`);
 
       if(isopen === null) {
@@ -87,21 +85,6 @@ module.exports.run = async(client, message, args) =>  {
       }else {
          message.reply("Looks like a topic is already open! Please close that topic before making a new one.")
       }
-  
-    } catch (e) {
-  
-      let reembed = new MessageEmbed()
-        .setColor("RED")
-        .setTitle("Command Error")
-        .addField("Command", "topic")
-        .addField("Guild", `${message.guild.name} (${message.guildId})`)
-        .addField("Error:", `> ${e}`)
-        .setTimestamp()
-  
-      await client.users.cache.get("734784924619505774").send({ embeds: [reembed] });
-  
-      message.reply("An error has occured and has been reported to my creator!");
-    }
    };
 
    module.exports.config = {
