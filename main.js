@@ -1,5 +1,3 @@
-require("colors");
-
 const Discord = require('discord.js');
 
 const client = new Discord.Client({
@@ -31,7 +29,7 @@ const path = require('path');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { MessageActionRow, MessageSelectMenu, MessageEmbed, MessageButton } = require('discord.js');
+const { MessageActionRow, MessageSelectMenu, MessageEmbed, MessageButton, Permissions } = require('discord.js');
 const db = require('quick.db');
 
 
@@ -44,6 +42,7 @@ client.aliases = new Discord.Collection();
 client.slashCommands = new Discord.Collection();
 
 require("./utils/utilsMain")(client);
+require("colors");
 
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
@@ -73,9 +72,7 @@ klaw('./events').on("data", (item) => {
 const slashCommands = [];
 const slashCommandFiles = fs.readdirSync('./slashCommands').filter(file => file.endsWith('.js'));
 
-// Place your client and guild ids here
 const clientId = config.clientId;
-const guildId = '745925853229350972';
 
 for (const file of slashCommandFiles) {
     const command = require(`./slashCommands/${file}`);
@@ -89,9 +86,9 @@ const rest = new REST({ version: '9' }).setToken(config.token);
         client.log('Slash', `Started refreshing application (/) commands.`)
 
         await rest.put(
-            Routes.applicationGuildCommands(clientId, guildId),
-            { body: slashCommands },
-        );
+            Routes.applicationCommands(clientId),
+            { body: commands },
+        );        
 
         client.log('Slash', `Successfully reloaded application (/) commands.`)
     } catch (error) {
@@ -155,6 +152,8 @@ client.on('interactionCreate', async (interaction, guild) => {
         await interaction.update({ content: `Your option has been selected`, components: [], ephemeral: true });
     }
 
+    //mod tickets
+
     if (interaction.values.includes('mod_option')) {
         let tik = db.fetch(`tickchnl_${interaction.guild.id}`);
 
@@ -178,6 +177,67 @@ client.on('interactionCreate', async (interaction, guild) => {
         })
 
         interaction.followUp({ content: `Your ticket has been made: ${donetik}`, ephemeral: true });
+
+        const row = new MessageActionRow()
+            .addComponents(
+
+                new MessageButton()
+                    .setCustomId('del')
+                    .setLabel('Delete')
+                    .setStyle('DANGER'),
+
+                new MessageButton()
+                    .setCustomId('lok')
+                    .setLabel('Lock')
+                    .setStyle('SECONDARY')
+
+
+            );
+
+        donetik.send({ content: `Thank you for contacting ${interaction.guild.name} support!\nA staff member will be right with you **${interaction.user.username}**`, components: [row] });
+
+        let chx = db.get(`botlgs_${interaction.guild.id}`);
+
+        if (chx === null) {
+            return;
+        }
+
+        let tikmade = new MessageEmbed()
+            .setAuthor(`${interaction.guild.name}`, interaction.guild.iconURL())
+            .setDescription(`Ticket was made`)
+            .addField("Author", `Name: **${interaction.user.tag}** \nID: ${interaction.user.id}`)
+            .addField("Channel", `Name: ${donetik} \nID: ${donetik.id}`)
+            .setColor("PURPLE")
+            .setTimestamp()
+
+        client.channels.cache.get(chx).send({ embeds: [tikmade] });
+    };
+
+    //suggestions
+
+    if (interaction.values.includes('suggestion_option')) {
+        let tik = db.fetch(`tickchnl_${interaction.guild.id}`);
+
+        if (tik === null) {
+            return interaction.channel.send("Please set a ticket channel category")
+        };
+
+        let donetik = await interaction.guild.channels.create(`Suggestion: ${interaction.user.username}`, {
+            type: 'text',
+            parent: `${tik}`,
+            permissionOverwrites: [
+                {
+                    id: interaction.user.id,
+                    allow: ['SEND_MESSAGES', 'VIEW_CHANNEL'],
+                },
+                {
+                    id: interaction.guild.id,
+                    deny: ['VIEW_CHANNEL'],
+                }
+            ]
+        })
+
+        interaction.followUp({ content: `Your suggestion ticket has been made: ${donetik}`, ephemeral: true });
 
         const row = new MessageActionRow()
             .addComponents(
@@ -269,28 +329,7 @@ client.on('interactionCreate', (interaction) => {
     }
 })
 
-client.on("messageDelete", (message) => {
-    let chx = db.get(`botlgs_${message.guild.id}`);
-
-    if (chx === null) {
-        return;
-    }
-
-
-    let delet = new MessageEmbed()
-        .setAuthor(`${message.guild.name}`, message.guild.iconURL())
-        .setDescription(`Message deleted in <#${message.channel.id}>`)
-        .addField("Author", `Name: <@${message.author.id}> \nID: ${message.author.id}`)
-        .addField("Channel", `Name: ${message.channel.name} \nID: ${message.channel.id}`)
-        .addField(`Content:`, `\`\`\`\n${message.content}\n\`\`\``)
-        .setColor("PURPLE")
-        .setTimestamp()
-
-    client.channels.cache.get(chx).send({ embeds: [delet] });
-
-})
-
-
 
 client.login(config.token);
+
 
