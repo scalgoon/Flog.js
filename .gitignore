@@ -1,5 +1,7 @@
 .idea
 node_modules
-config.json
+.env
 package-lock.json
 json.sqlite
+yarn.lock
+*.log

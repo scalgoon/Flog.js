@@ -37,7 +37,7 @@ module.exports.run = async(client, message, args) =>  {
    module.exports.config = {
     name: "serverinfo",
     aliases: ["si"],
-    category: "Misc",
+    
     usage: "*ping",
     description: "Sends the current server's information"
 }

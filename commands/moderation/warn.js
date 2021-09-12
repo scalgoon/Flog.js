@@ -57,7 +57,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
     name: "warn",
     aliases: ["w"],
-    category: "Moderation",
+    
     usage: "*warn 'user'\nOption 2: *warn 'user' 'reason'",
     description: "Warns a specified user"
 }

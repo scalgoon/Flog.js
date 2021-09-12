@@ -24,7 +24,7 @@ module.exports.run = async(client, message, args) =>  {
    module.exports.config = {
     name: "verify",
     aliases: ["v"],
-    category: "Misc",
+    
     usage: "*verify",
     description: "Gives the user a verification role"
 }

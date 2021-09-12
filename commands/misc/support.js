@@ -12,7 +12,7 @@ module.exports.run = async(client, message, args) => {
 module.exports.config = { 
 name: "support", 
 aliases: ["sup"], 
-category: "Misc", 
+ 
 usage: "*support", 
 description: "Sends the bots support server link" 
 }

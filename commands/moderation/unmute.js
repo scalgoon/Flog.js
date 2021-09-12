@@ -63,7 +63,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
     name: "unmute",
     aliases: ["unm"],
-    category: "Moderation",
+    
     usage: "*unmute @member",
     description: "Unmutes a specified user"
 }

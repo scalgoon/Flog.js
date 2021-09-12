@@ -61,7 +61,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
     name: "logs",
     aliases: ["l"],
-    category: "Moderation",
+    
     usage: "*logs @user\n*logs @user clear",
     description: "Shows the users server logs"
 }
