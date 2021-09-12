@@ -90,7 +90,7 @@ module.exports.run = async(client, message, args) =>  {
    module.exports.config = {
     name: "topic",
     aliases: ["tp"],
-    category: "Misc",
+    
     usage: "*ping",
     description: "Sends the bot's ping and latency"
 };

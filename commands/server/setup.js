@@ -137,7 +137,6 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
     name: "setup",
     aliases: [],
-    category: "Server",
     usage: "*setup <options> <mini-option> <required-arg>",
     description: "Sets the server up for the bot"
 }

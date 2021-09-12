@@ -1,18 +1,22 @@
 const { MessageEmbed } = require('discord.js');
-
+const { stripIndents } = require("common-tags");
 
 module.exports.run = async(client, message, args) =>  {
 
-    let embed = new MessageEmbed()
-        .setTitle("Help Embed")
-        .addField("Command Info", "To get more information on a command do *help <command>")
-        .addField("Moderation", "Slowmode, Embed, Lock, Mute, Logs, Warn, Topic")
-        .addField("Misc", "Ping, Say, Serverinfo, 8ball")
-        .addField("Server", "Prefix, Setup")
-        .setFooter(`Requested by ${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
-        .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
-        .setColor('27cc9a')
+    const commands = (category) => {
 
+        // Future note: is empty is just an category mismatch
+        return client.commands
+            .filter(cmd => cmd.category === category)
+            .map(cmd => cmd.config.hidden ? "" : `\`${cmd.config.name}\``)
+            .join(", ");
+    };
+    
+    let embed = new MessageEmbed()
+        .setDescription(client.categories
+            .remove("debug")
+            .map(value => stripIndents`**${client.betterCategoryNames.has(value) ? client.betterCategoryNames.get(value) : value[0].toUpperCase() + value.slice(1)}:** \n ${commands(value)}`)
+            .join("\n "))
     let command = args[0]
 
        if(!args[0]) return message.channel.send({ embeds: [embed] });
@@ -23,12 +27,8 @@ module.exports.run = async(client, message, args) =>  {
         } else {
             message.channel.send("That doesn\'t seem to be a command I have");
         }
-       
-         
 
-        if(args[0] === "eval") return  message.channel.send("That doesn\'t seem to be a command I have");
-        if(args[0] === "reload") return  message.channel.send("That doesn\'t seem to be a command I have");
-       
+        if(args[0] === "eval" || args[0] === "reload") return  message.channel.send("That doesn\'t seem to be a command I have");
         if(args[0]) {
             try {
                 let embed1 = new MessageEmbed()
@@ -52,7 +52,6 @@ module.exports.run = async(client, message, args) =>  {
     module.exports.config = {
         name: "help",
         aliases: ["h"],
-        category: "Misc",
         usage: "*help\n*help <command name>",
         description: "Sends the bot's command information"
     }

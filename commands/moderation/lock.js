@@ -34,7 +34,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
     name: "lock",
     aliases: ["l"],
-    category: "Moderation",
+    
     usage: "*lock on or off",
     description: "Locks the channel the author is in"
 }

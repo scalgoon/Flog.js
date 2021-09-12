@@ -60,7 +60,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
 	name: "unban",
 	aliases: ["ub"],
-	category: "Moderation",
+	
 	usage: "*unban 'user id'",
 	description: "Unbans a user"
 }

@@ -24,7 +24,7 @@ module.exports.run = async(client, message, args) =>  {
     module.exports.config = {
         name: "embed",
         aliases: ["e"],
-        category: "Moderation",
+        
         usage: "*embed 'title' 'description'",
         description: "Sends a custom embed"
     }

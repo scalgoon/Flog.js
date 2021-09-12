@@ -4,6 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
+    "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Goose Underscore",
@@ -14,10 +15,12 @@
     "beautify": "^0.0.8",
     "canvacord": "^5.2.0",
     "colors": "^1.4.0",
+    "common-tags": "^1.8.0",
     "discord-api-types": "^0.22.0",
     "discord-slash-commands": "^1.2.4",
     "discord-xp": "^1.1.14",
     "discord.js": "^13.1.0",
+    "dotenv": "^10.0.0",
     "fs": "*",
     "klaw": "^3.0.0",
     "moment": "^2.29.1",

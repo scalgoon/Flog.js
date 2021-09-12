@@ -56,7 +56,7 @@ module.exports.run = async(client, message, args) =>  {
    module.exports.config = {
     name: "userinfo",
     aliases: ["ui"],
-    category: "Misc",
+    
     usage: "*userinfo \nOption 2: *userinfo @user",
     description: "Shows the information of the author or another user"
 }

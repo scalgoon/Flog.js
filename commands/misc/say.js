@@ -18,7 +18,7 @@ module.exports.run = async(client, message, args) =>  {
    module.exports.config = {
     name: "say",
     aliases: ["talk"],
-    category: "Misc",
+    
     usage: "*say 'message'",
     description: "Sends a requested message"
 }

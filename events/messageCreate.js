@@ -1,12 +1,19 @@
 const { MessageEmbed } = require('discord.js');
-const prefix = "*"
+const db = require('quick.db')
 
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 module.exports = async (client, message) => {
     if(!message.guild ||
         message.author.bot) return;
+    let prefix; 
+    let prefixes = db.get(`prefix1_${message.guild.id}`)
 
+    if (prefixes === null) {
+        prefix = "*"
+    } else {
+        prefix = prefixes
+    }
     const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`); // from rom, Allowing either an mention or the prefix to respond to.
     if (!prefixRegex.test(message.content)) return;
 
@@ -20,6 +27,8 @@ module.exports = async (client, message) => {
     let command = client.commands.get(cmd);
     if (!command) command = client.commands.get(client.aliases.get(cmd));
 
-    if (command)
+    if (command){
         command.run(client, message, args);
+    }
+
 };

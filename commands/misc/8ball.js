@@ -37,7 +37,7 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
 	name: "8ball",
 	aliases: ["8b", "ask"],
-	category: "Misc",
+	
 	usage: "*8ball 'question here'?",
 	description: "Sends a answer to your question"
 }

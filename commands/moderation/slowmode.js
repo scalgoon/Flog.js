@@ -49,7 +49,7 @@ module.exports.run = async(client, message, args) =>  {
    module.exports.config = {
     name: "slowmode",
     aliases: ["sl", "slow"],
-    category: "Moderation",
+    
     usage: "*slowmode 'number'",
     description: "Changes the channel's slowmode"
 }
