@@ -9,6 +9,8 @@ module.exports.run = async(client, message, args) => {
     let response = workMessages[Math.floor(Math.random() * workMessages.length)]
     let amount = Math.floor(Math.random() * 537) + 1;
     db.add(`eco_${message.guild.id}_${message.member.id}`, amount)
+
+    //keep in mind this part is completely customizable! Add a embed if you want.
     message.channel.send(`${response} ${amount} :coin:!`)
 }
 
