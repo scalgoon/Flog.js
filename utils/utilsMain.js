@@ -40,7 +40,7 @@ module.exports = (client) => {
         if (category) props.category = category
         client.commands.set(props.config.name, props);
         props.config.aliases.forEach(alias => {
-        client.aliases.set(alias, props.config.aliases);
+            client.aliases.set(alias, props.config.name)
         });
         return {
         res: true

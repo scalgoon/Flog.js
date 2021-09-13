@@ -1,4 +1,4 @@
-module.exports = (client, guild) => {
+module.exports = (client) => {
     console.log('Terminal 3.0 is online');
 
     setInterval(() => {

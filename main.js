@@ -43,6 +43,7 @@ client.betterCategoryNames.set("server", ":computer: - Server");
 client.betterCategoryNames.set("setup", ":tools: - Setup");
 client.betterCategoryNames.set("moderation", ":shield: - Moderation");
 client.betterCategoryNames.set("automod", ":robot: - Automod");
+client.betterCategoryNames.set("eco", ":moneybag: - Economy")
 require("./utils/utilsMain")(client);
 require("colors");
 require('./utils/handler')(client);

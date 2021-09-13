@@ -56,7 +56,6 @@ module.exports.run = async (client, message, args) => {
 module.exports.config = {
 	name: "antispam",
 	aliases: ["as"],
-	
 	usage: "*antispam 'on or off'",
 	description: "Turns antispam on or off"
 }

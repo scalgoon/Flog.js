@@ -14,7 +14,7 @@ module.exports = async (client, message) => {
     } else {
         prefix = prefixes
     }
-    const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`); // from rom, Allowing either an mention or the prefix to respond to.
+    const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`);
     if (!prefixRegex.test(message.content)) return;
 
     const [, matchedPrefix] = message.content.match(prefixRegex);
