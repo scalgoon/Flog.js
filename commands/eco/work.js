@@ -11,6 +11,8 @@ module.exports.run = async(client, message, args) => {
     db.add(`eco_${message.guild.id}_${message.member.id}`, amount)
 
     //keep in mind this part is completely customizable! Add a embed if you want.
+    
+    //Another cool idea: let the money emoji be customizable! let it be set via command.
     message.channel.send(`${response} ${amount} :coin:!`)
 }
 
