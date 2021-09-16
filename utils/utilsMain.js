@@ -28,7 +28,7 @@ module.exports = (client) => {
     try {
         const props = require(`${process.cwd()}/commands/${category}/${commandName}`);
         if(lastCategoryLoaded !== category){
-        client.log("Load", `Starting to load all commands from the category ${category}`);
+        console.log( `> Starting to load all commands from the category ${category}`);
         lastCategoryLoaded = category;
         }
         if (!dontLog) {
