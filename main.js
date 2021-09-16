@@ -2,17 +2,21 @@ const Discord = require('discord.js');
 require('dotenv').config()
 const client = new Discord.Client({
     intents: [
-        'GUILDS',
-        'GUILD_MEMBERS',
-        'GUILD_MESSAGES',
-        'GUILD_MESSAGE_REACTIONS',
-        'GUILD_MESSAGE_TYPING',
-        'GUILD_BANS',
-        'GUILD_EMOJIS_AND_STICKERS',
-        'GUILD_INTEGRATIONS',
-        'GUILD_INVITES',
-        'GUILD_VOICE_STATES',
-        'GUILD_PRESENCES',
+        "GUILDS",
+        "GUILD_MEMBERS",
+        "GUILD_BANS",
+        "GUILD_EMOJIS_AND_STICKERS",
+        "GUILD_INTEGRATIONS",
+        "GUILD_WEBHOOKS",
+        "GUILD_INVITES",
+        "GUILD_VOICE_STATES",
+        "GUILD_PRESENCES",
+        "GUILD_MESSAGES",
+        "GUILD_MESSAGE_REACTIONS",
+        "GUILD_MESSAGE_TYPING",
+        "DIRECT_MESSAGES",
+        "DIRECT_MESSAGE_REACTIONS",
+        "DIRECT_MESSAGE_TYPING",
     ],
     allowedMentions: ["roles", "users"],
     partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION']
@@ -98,7 +102,7 @@ const TIME = 7000;
 const DIFF = 3000;
 
 
-let ch = db.fetch(`antispam_${message.guild.id}`);
+let ch = db.fetch(`antispam_${message.guildId}`);
 
 if (ch === null) {
     return;
