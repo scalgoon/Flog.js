@@ -2,6 +2,7 @@
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-3 Beta-blue.svg?cacheSeconds=2592000" />
   </a>
+  <a href="https://top.gg/bot/745358062025703445"> <img src="https://top.gg/api/widget/status/745358062025703445.svg" alt="Terminal" /> </a>
 </p>
 
 ## Installing the modules
