@@ -1,4 +1,4 @@
-<h1>Terminal.js</h1>
+<h1>Flog.js</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-3.2.0-blue.svg?cacheSeconds=2592000" />
   </a>
@@ -11,7 +11,7 @@
 npm install
 ```
 
-## Terminal's prefix
+## Flog's prefix
 
 ```
 *help or <@Terminal>help
